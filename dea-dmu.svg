@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="770" height="250" viewBox="0 0 770 250" role="img" aria-labelledby="title desc">
+  <title id="title">Data Envelopment Analysis decision-making unit</title>
+  <desc id="desc">Two inputs, Labor Hours X1 and Facility Costs X2, enter a DMU. Two outputs, Monthly Profit Y1 and Peak Volume Y2, leave the DMU.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,4 L0,8 Z" fill="#111"/></marker>
+  </defs>
+  <rect width="770" height="250" fill="#fff"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#111">
+    <text x="154" y="28" font-size="22" font-weight="700" text-anchor="middle">INPUTS</text>
+    <text x="616" y="28" font-size="22" font-weight="700" text-anchor="middle">OUTPUTS</text>
+    <rect x="294" y="66" width="216" height="130" fill="#b8dce0" stroke="#111" stroke-width="1"/>
+    <text x="402" y="148" font-size="47" text-anchor="middle">DMU</text>
+    <line x1="116" y1="91" x2="294" y2="91" stroke="#111" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <line x1="116" y1="172" x2="294" y2="172" stroke="#111" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <line x1="510" y1="91" x2="688" y2="91" stroke="#111" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <line x1="510" y1="172" x2="688" y2="172" stroke="#111" stroke-width="1.2" marker-end="url(#arrow)"/>
+    <text x="120" y="83" font-size="20">Labor Hours (X<tspan baseline-shift="sub" font-size="14">1</tspan>)</text>
+    <text x="108" y="164" font-size="20">Facility Costs (X<tspan baseline-shift="sub" font-size="14">2</tspan>)</text>
+    <text x="516" y="83" font-size="20">Monthly Profit (Y<tspan baseline-shift="sub" font-size="14">1</tspan>)</text>
+    <text x="516" y="164" font-size="20">Peak Volume (Y<tspan baseline-shift="sub" font-size="14">2</tspan>)</text>
+  </g>
+</svg>
