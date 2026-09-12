@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introduction | Modelling and Prescriptive Analytics</title>
+<style>
+:root {
+  --burgundy: #7a003c;
+  --burgundy-deep: #5e0b30;
+  --gold: #fdbf57;
+  --gold-line: #c98a1f;
+  --ink: #222b33;
+  --muted: #6a7480;
+  --paper: #f6f3ec;
+  --panel: #ffffff;
+  --rule: #ddd6ca;
+  --soft: #f0ebe1;
+  --shadow: 0 12px 30px rgba(60, 40, 40, .12);
+  --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: #1c1a24;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.progress { position: fixed; top: 0; left: 0; height: 5px; width: 0; background: var(--gold); z-index: 30; transition: width .45s ease; }
+
+/* stage scales a fixed 1280x720 canvas to fit any screen */
+.viewport { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.stage { flex: none; width: 1280px; height: 720px; overflow: hidden; transform-origin: center center; }
+.track { display: flex; width: 100%; height: 100%; transition: transform .5s cubic-bezier(.65,.05,.36,1); }
+
+/* ---------- slide (fixed canvas) ---------- */
+.slide {
+  flex: 0 0 1280px;
+  width: 1280px;
+  height: 720px;
+  position: relative;
+  overflow: hidden;
+  padding: 40px 68px 30px;
+  background: var(--paper);
+}
+.slide-accent { background: linear-gradient(140deg, var(--burgundy-deep) 0%, var(--burgundy) 70%, #8f4f2b 100%); color: #fff; }
+.slide-accent::before {
+  content: ""; position: absolute; inset: 0; opacity: .16; pointer-events: none;
+  background: repeating-linear-gradient(135deg, transparent 0 38px, rgba(255,255,255,.14) 39px 40px);
+}
+
+.inner {
+  position: relative; z-index: 1;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+/* ---------- header ---------- */
+.brand { display: flex; align-items: center; justify-content: space-between; padding-bottom: 18px; }
+.logo-box { display: inline-flex; }
+.slide-accent .logo-box { background: #fff; padding: 10px 15px; border-radius: 7px; box-shadow: 0 6px 16px rgba(0,0,0,.22); }
+.logo { width: 236px; height: auto; display: block; }
+.slide-accent .logo { width: 214px; }
+.term { font-size: 13px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--burgundy); }
+.slide-accent .term { color: var(--gold); }
+
+/* ---------- content ---------- */
+.content { min-height: 0; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+.kicker { font-size: 14px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-line); margin: 0 0 12px; }
+.slide-accent .kicker { color: var(--gold); }
+h1, h2, h3 { margin: 0; color: var(--burgundy-deep); line-height: 1.06; font-weight: 700; }
+.slide-accent h1, .slide-accent h2 { color: #fff; }
+h1 { font-size: 62px; letter-spacing: -.02em; }
+h2 { font-size: 44px; letter-spacing: -.015em; }
+.rule { width: 78px; height: 6px; background: var(--gold); border-radius: 3px; margin: 18px 0; }
+.lead { font-size: 24px; line-height: 1.4; color: var(--ink); margin: 0; max-width: 980px; }
+.slide-accent .lead { color: #fbeede; }
+.byline { margin: 26px 0 0; font-size: 22px; }
+.byline strong { color: var(--gold); font-weight: 700; }
+
+/* ---------- footer ---------- */
+.footer { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid var(--rule); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.slide-accent .footer { border-top-color: rgba(255,255,255,.28); color: rgba(255,255,255,.72); }
+
+/* ---------- components (one type scale) ---------- */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 22px; }
+.grid-2.weighted { grid-template-columns: 1.08fr .92fr; }
+.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; box-shadow: var(--shadow); padding: 24px 28px; }
+.panel-title { font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--burgundy); margin: 0 0 14px; }
+.list { margin: 0; padding: 0; list-style: none; }
+.list li { position: relative; padding-left: 26px; font-size: 19px; line-height: 1.4; color: var(--ink); }
+.list li + li { margin-top: 11px; }
+.list li::before { content: ""; position: absolute; left: 3px; top: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+.list li strong { color: var(--burgundy); }
+
+.callout { border-left: 6px solid var(--gold); background: var(--soft); border-radius: 0 8px 8px 0; padding: 20px 24px; font-size: 20px; line-height: 1.42; color: var(--ink); }
+.callout .big { display: block; font-size: 23px; font-weight: 700; color: var(--burgundy); margin-bottom: 6px; }
+.callout strong { color: var(--burgundy); }
+
+/* definition slide */
+.def-band { background: var(--panel); border: 1px solid var(--rule); border-left: 8px solid var(--burgundy); border-radius: 10px; box-shadow: var(--shadow); padding: 28px 34px; }
+.def-band .def-text { font-size: 32px; line-height: 1.26; font-weight: 700; color: var(--burgundy-deep); margin: 0; }
+.uses-label { font-size: 13px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 24px 0 12px; }
+.uses { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.use { background: var(--panel); border: 1px solid var(--rule); border-top: 4px solid var(--gold); border-radius: 8px; box-shadow: 0 6px 14px rgba(60,40,40,.07); padding: 20px 14px; min-height: 108px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 18px; font-weight: 650; line-height: 1.28; color: var(--burgundy-deep); }
+
+/* applications */
+.apps { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 34px; margin-top: 20px; }
+.app { display: flex; gap: 16px; align-items: baseline; padding: 13px 0; border-top: 1px solid var(--rule); }
+.app:nth-child(1), .app:nth-child(2) { border-top: 0; }
+.app .name { flex: 0 0 200px; font-size: 19px; font-weight: 700; color: var(--burgundy); }
+.app .desc { font-size: 17px; line-height: 1.36; color: var(--ink); }
+
+/* trio cards */
+.trio { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 22px; }
+.tcard { background: var(--panel); border: 1px solid var(--rule); border-top: 5px solid var(--burgundy); border-radius: 10px; box-shadow: var(--shadow); padding: 26px 24px; display: flex; flex-direction: column; }
+.tcard .step { font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-line); }
+.tcard h3 { font-size: 26px; margin: 10px 0 10px; }
+.tcard p { font-size: 18px; line-height: 1.4; color: var(--ink); margin: 0; }
+
+/* table */
+.table-wrap { margin-top: 22px; background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px 22px; text-align: left; vertical-align: top; line-height: 1.34; font-size: 18px; border-bottom: 1px solid var(--rule); }
+th { width: 34%; background: var(--burgundy); color: #fff; font-size: 15px; letter-spacing: .05em; text-transform: uppercase; font-weight: 700; }
+tr:last-child td, tr:last-child th { border-bottom: 0; }
+
+/* source figure */
+.figure { display: flex; align-items: center; justify-content: center; min-height: 0; margin-top: 14px; }
+.figure img { max-height: 100%; max-width: 100%; object-fit: contain; background: #fff; padding: 12px; border: 1px solid var(--rule); border-radius: 8px; box-shadow: var(--shadow); }
+
+/* ---------- controls ---------- */
+.controls { flex: none; height: 60px; background: #14121b; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 22px; }
+.controls-group { display: flex; align-items: center; gap: 14px; }
+.controls-group.controls-center { gap: 24px; }
+.controls button { width: 38px; height: 38px; border: 1px solid rgba(255,255,255,.4); background: transparent; color: #fff; border-radius: 50%; cursor: pointer; font-size: 21px; line-height: 1; display: flex; align-items: center; justify-content: center; transition: background .2s, border-color .2s; }
+.controls button:hover:not(:disabled) { background: var(--burgundy); border-color: var(--burgundy); }
+.controls button:disabled { opacity: .3; cursor: default; }
+.counter { min-width: 68px; text-align: center; font-size: 14px; letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+.dots { display: flex; gap: 7px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.32); cursor: pointer; transition: background .2s, transform .2s; }
+.dot.active { background: var(--gold); transform: scale(1.3); }
+.zoom-pct { min-width: 44px; text-align: center; font-size: 13px; letter-spacing: .05em; font-variant-numeric: tabular-nums; color: rgba(255,255,255,.85); }
+.controls .pdf-btn { display: flex; align-items: center; gap: 8px; width: auto; height: 36px; padding: 0 16px; border-radius: 6px; border: none; background: var(--gold); color: var(--burgundy-deep); font-family: var(--font); font-size: 13px; font-weight: 700; letter-spacing: .02em; cursor: pointer; transition: background .2s; white-space: nowrap; }
+.controls .pdf-btn:hover { background: #ffcf7a; }
+.pdf-btn svg { width: 14px; height: 14px; flex: none; }
+.stage.zoomed { cursor: grab; }
+.stage.zoomed.panning { cursor: grabbing; }
+@media print {
+  html, body { background: #fff; overflow: visible; height: auto; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+  .progress, .controls { display: none !important; }
+  .viewport { display: block !important; overflow: visible !important; height: auto !important; }
+  .stage { transform: none !important; width: 1280px; height: 720px; overflow: visible !important; }
+  .track { display: block !important; transform: none !important; width: 1280px !important; height: auto !important; transition: none !important; }
+  .slide { width: 1280px !important; height: 720px !important; flex: none !important; page-break-after: always; break-after: page; box-shadow: none !important; }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+  .slide-accent { background: linear-gradient(140deg, var(--burgundy-deep) 0%, var(--burgundy) 70%, #8f4f2b 100%) !important; }
+  @page { size: 13.333in 7.5in; margin: 0; }
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<div class="viewport">
+  <div class="stage" id="stage">
+    <div class="track" id="track">
+
+      <!-- 1 · Title -->
+      <section class="slide slide-accent">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">4DA3 · Lecture 1</p>
+            <h1>Modelling and<br>Prescriptive Analytics</h1>
+            <div class="rule"></div>
+            <p class="lead">Introduction</p>
+            <p class="byline">Instructor: <strong>Dr. Zeinab Vosooghi</strong></p>
+          </div>
+          <footer class="footer"><span>DeGroote School of Business · McMaster University</span><span>Fall 2026</span></footer>
+        </div>
+      </section>
+
+      <!-- 2 · About the instructor -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">Instructor</p>
+            <h2>About the instructor</h2>
+            <div class="rule"></div>
+            <div class="grid-2">
+              <div class="panel">
+                <p class="panel-title">Background</p>
+                <ul class="list">
+                  <li><strong>Dr. Zeinab Vosooghi</strong> (She/Her/Hers)</li>
+                  <li>Ph.D. in Management Science (Business Administration), McMaster University</li>
+                  <li>M.Sc. in Industrial Engineering</li>
+                  <li>B.Sc. in Industrial Engineering</li>
+                </ul>
+              </div>
+              <div class="panel">
+                <p class="panel-title">Role &amp; contact</p>
+                <ul class="list">
+                  <li><strong>Senior Data Analyst</strong> at CIBC</li>
+                  <li>Email: vosooghz@mcmaster.ca</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 3 · What is Analytics -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">Definition</p>
+            <h2>What is Analytics?</h2>
+            <div class="rule"></div>
+            <div class="def-band">
+              <p class="def-text">The process of transforming data into actions through analysis and insights.</p>
+            </div>
+            <p class="uses-label">Analytics draws on</p>
+            <div class="uses">
+              <div class="use">Data</div>
+              <div class="use">Information technology</div>
+              <div class="use">Statistical analysis</div>
+              <div class="use">Quantitative methods</div>
+              <div class="use">Mathematical &amp; computer models</div>
+            </div>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 4 · Applications -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">In practice</p>
+            <h2>Applications of Analytics</h2>
+            <div class="rule"></div>
+            <div class="apps">
+              <div class="app"><span class="name">Pricing</span><span class="desc">Setting prices for consumer and industrial goods, government and maintenance contracts.</span></div>
+              <div class="app"><span class="name">Customer segmentation</span><span class="desc">Targeting key customer groups in retail, insurance, and the credit card industry.</span></div>
+              <div class="app"><span class="name">Merchandising</span><span class="desc">Determining brands to buy, quantities, and allocations.</span></div>
+              <div class="app"><span class="name">Location</span><span class="desc">Finding the best location for bank branches and ATMs.</span></div>
+              <div class="app"><span class="name">Supply chain design</span><span class="desc">Determining the best sourcing, transportation, and delivery routes.</span></div>
+              <div class="app"><span class="name">Staffing</span><span class="desc">Ensuring appropriate staffing levels and capabilities, and hiring the right people.</span></div>
+              <div class="app"><span class="name">Health care</span><span class="desc">Scheduling operating rooms to improve utilization, patient flow, and waiting times.</span></div>
+            </div>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 5 · Importance -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">Why it matters</p>
+            <h2>Importance of Analytics</h2>
+            <div class="rule"></div>
+            <div class="grid-2 weighted">
+              <div class="panel">
+                <p class="panel-title">Business value</p>
+                <ul class="list">
+                  <li>Strong relationship with profitability of businesses</li>
+                  <li>Strong relationship with revenue of businesses</li>
+                  <li>Strong relationship with shareholder return</li>
+                  <li>Enhances understanding of data</li>
+                  <li>Vital for businesses to remain competitive</li>
+                </ul>
+              </div>
+              <div class="panel" style="display:flex;flex-direction:column;justify-content:center;">
+                <div class="callout"><span class="big">“Competing on Analytics”</span>Davenport and Harris: top-performing organizations are <strong>3&times; more likely</strong> to be sophisticated in their use of Analytics than lower performers.</div>
+              </div>
+            </div>
+            <p class="lead" style="font-size:19px;margin-top:18px;">Understanding the capabilities and techniques of Analytics is vital to managing in today&rsquo;s business environment.</p>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 6 · Evolution -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">History</p>
+            <h2>Evolution of Business Analytics</h2>
+            <div class="rule"></div>
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><th>Business Intelligence &amp; Information Systems</th><td>Collection, management, analysis, and reporting of data using a computer.</td></tr>
+                  <tr><th>Statistics</th><td>Gaining a richer understanding of data and identifying interesting relationships.</td></tr>
+                  <tr><th>Operations Research / Management Science</th><td>Analysis and solution of complex problems using mathematical and computer models.</td></tr>
+                  <tr><th>Decision Support Systems</th><td>Combine BI concepts with MS models to support decision making — through data management, model management, and a communication system.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 7 · Visual perspective (source figure) -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">Framework</p>
+            <h2>A visual perspective of Business Analytics</h2>
+            <div class="rule"></div>
+            <div class="figure">
+              <img src="introduction-assets/image4.png" alt="Visual perspective of business analytics diagram from the course source deck">
+            </div>
+          </div>
+          <footer class="footer"><span>Figure from the course source deck</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 8 · Scope -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">Four questions</p>
+            <h2>Scope of Analytics</h2>
+            <div class="rule"></div>
+            <div class="trio">
+              <div class="tcard"><span class="step">Descriptive</span><h3>What happened?</h3><p>Summarizing and reporting on data to understand past performance.</p></div>
+              <div class="tcard"><span class="step">Diagnostic</span><h3>Why did it happen?</h3><p>Examining data to uncover the causes behind past outcomes.</p></div>
+              <div class="tcard"><span class="step">Predictive</span><h3>What could happen?</h3><p>Using data and models to forecast future outcomes and patterns.</p></div>
+              <div class="tcard"><span class="step">Prescriptive</span><h3>What should we do?</h3><p>Using models and optimization to recommend the best course of action.</p></div>
+            </div>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 9 · Spreadsheets -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">Tools</p>
+            <h2>Analytics using Spreadsheets</h2>
+            <div class="rule"></div>
+            <p class="lead">In this course we use spreadsheets as the platform for hands-on analytics — managing data, building models, and exploring results.</p>
+            <div class="trio">
+              <div class="tcard"><span class="step">Accessible</span><h3>Low barrier</h3><p>No specialized software needed — build and test models in a familiar tool.</p></div>
+              <div class="tcard"><span class="step">Transparent</span><h3>See the logic</h3><p>Every formula and calculation is visible, so the modelling steps stay clear.</p></div>
+              <div class="tcard"><span class="step">Widely used</span><h3>Practical skill</h3><p>Spreadsheets are a standard tool for analysis across business roles.</p></div>
+            </div>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 10 · Introduction to Excel -->
+      <section class="slide">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">Skills</p>
+            <h2>Introduction to Excel</h2>
+            <div class="rule"></div>
+            <div class="grid-2">
+              <div class="panel">
+                <p class="panel-title">Functions &amp; features</p>
+                <ul class="list">
+                  <li>Basic features: referencing, dragging, sorting</li>
+                  <li>Simple functions: SUM, SUMPRODUCT, MIN, MAX</li>
+                  <li>Understanding how a function works</li>
+                </ul>
+              </div>
+              <div class="panel">
+                <p class="panel-title">Working with output</p>
+                <ul class="list">
+                  <li>Showing formulas; tracing precedents and dependents</li>
+                  <li>Charts: line, bar, column</li>
+                  <li>Pivot tables</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>DeGroote School of Business</span></footer>
+        </div>
+      </section>
+
+      <!-- 11 · Practice -->
+      <section class="slide slide-accent">
+        <div class="inner">
+          <header class="brand">
+            <span class="logo-box"><img class="logo" src="m24-dsb_left-col_png.png" alt="McMaster University — DeGroote School of Business"></span>
+            <span class="term">Fall 2026</span>
+          </header>
+          <div class="content">
+            <p class="kicker">Hands-on practice</p>
+            <h2>Let&rsquo;s work in Excel</h2>
+            <div class="rule"></div>
+            <p class="lead">Open <strong style="color:var(--gold)">“Review of Excel Functions.xlsx”</strong> and follow along.</p>
+          </div>
+          <footer class="footer"><span>Modelling and Prescriptive Analytics · Introduction</span><span>Fall 2026</span></footer>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<nav class="controls" aria-label="Slide controls">
+  <div class="controls-group controls-left">
+    <button id="zoomOut" type="button" aria-label="Zoom out">&#8722;</button>
+    <span class="zoom-pct" id="zoomPct">100%</span>
+    <button id="zoomIn" type="button" aria-label="Zoom in">+</button>
+    <button id="zoomReset" type="button" aria-label="Reset zoom">&#8635;</button>
+  </div>
+  <div class="controls-group controls-center">
+    <button id="prev" type="button" aria-label="Previous slide">&#8249;</button>
+    <span class="counter" id="counter">1 / 11</span>
+    <div class="dots" id="dots"></div>
+    <button id="next" type="button" aria-label="Next slide">&#8250;</button>
+  </div>
+  <div class="controls-group controls-right">
+    <button id="downloadPdf" type="button" class="pdf-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>PDF</button>
+  </div>
+</nav>
+
+<script>
+(function () {
+  var CANVAS_W = 1280, CANVAS_H = 720;
+  var stage = document.getElementById('stage');
+  var track = document.getElementById('track');
+  var slides = Array.prototype.slice.call(track.children);
+  var total = slides.length;
+  var current = 0;
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var counter = document.getElementById('counter');
+  var progress = document.getElementById('progress');
+  var dotsWrap = document.getElementById('dots');
+  var zoomIn = document.getElementById('zoomIn');
+  var zoomOut = document.getElementById('zoomOut');
+  var zoomReset = document.getElementById('zoomReset');
+  var zoomPct = document.getElementById('zoomPct');
+  var downloadPdf = document.getElementById('downloadPdf');
+
+  var zoomScale = 1, panX = 0, panY = 0;
+  var ZOOM_MIN = 1, ZOOM_MAX = 3, ZOOM_STEP = 0.25;
+
+  slides.forEach(function (_, index) {
+    var dot = document.createElement('span');
+    dot.className = 'dot' + (index === 0 ? ' active' : '');
+    dot.title = 'Go to slide ' + (index + 1);
+    dot.addEventListener('click', function () { go(index); });
+    dotsWrap.appendChild(dot);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function baseScale() {
+    var vp = stage.parentElement;
+    return Math.min(vp.clientWidth / CANVAS_W, vp.clientHeight / CANVAS_H);
+  }
+
+  function applyTransform() {
+    var scale = baseScale() * zoomScale;
+    stage.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
+    stage.classList.toggle('zoomed', zoomScale > 1);
+    zoomPct.textContent = Math.round(zoomScale * 100) + '%';
+    zoomOut.disabled = zoomScale <= ZOOM_MIN;
+    zoomIn.disabled = zoomScale >= ZOOM_MAX;
+  }
+
+  function setZoom(value) {
+    zoomScale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, value));
+    if (zoomScale === ZOOM_MIN) { panX = 0; panY = 0; }
+    applyTransform();
+  }
+
+  zoomIn.addEventListener('click', function () { setZoom(zoomScale + ZOOM_STEP); });
+  zoomOut.addEventListener('click', function () { setZoom(zoomScale - ZOOM_STEP); });
+  zoomReset.addEventListener('click', function () { panX = 0; panY = 0; setZoom(1); });
+
+  var isPanning = false, panStartX = 0, panStartY = 0, panOriginX = 0, panOriginY = 0;
+  stage.addEventListener('mousedown', function (e) {
+    if (zoomScale <= ZOOM_MIN) return;
+    isPanning = true;
+    panStartX = e.clientX; panStartY = e.clientY;
+    panOriginX = panX; panOriginY = panY;
+    stage.classList.add('panning');
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (!isPanning) return;
+    panX = panOriginX + (e.clientX - panStartX);
+    panY = panOriginY + (e.clientY - panStartY);
+    applyTransform();
+  });
+  window.addEventListener('mouseup', function () {
+    isPanning = false;
+    stage.classList.remove('panning');
+  });
+
+  downloadPdf.addEventListener('click', function () { window.print(); });
+
+  function fit() { applyTransform(); }
+
+  function go(index) {
+    current = Math.max(0, Math.min(total - 1, index));
+    track.style.transform = 'translateX(' + (-CANVAS_W * current) + 'px)';
+    counter.textContent = (current + 1) + ' / ' + total;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    prev.disabled = current === 0;
+    next.disabled = current === total - 1;
+    dots.forEach(function (dot, i) { dot.classList.toggle('active', i === current); });
+    panX = 0; panY = 0; setZoom(1);
+  }
+
+  prev.addEventListener('click', function () { go(current - 1); });
+  next.addEventListener('click', function () { go(current + 1); });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') { event.preventDefault(); go(current + 1); }
+    if (event.key === 'ArrowLeft' || event.key === 'PageUp') { event.preventDefault(); go(current - 1); }
+    if (event.key === 'Home') { event.preventDefault(); go(0); }
+    if (event.key === 'End') { event.preventDefault(); go(total - 1); }
+  });
+  var startX = null;
+  track.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', function (e) {
+    if (startX === null) return;
+    var delta = e.changedTouches[0].clientX - startX;
+    if (Math.abs(delta) > 50) go(current + (delta < 0 ? 1 : -1));
+    startX = null;
+  }, { passive: true });
+
+  window.addEventListener('resize', fit);
+  fit();
+  go(0);
+})();
+</script>
+</body>
+</html>
